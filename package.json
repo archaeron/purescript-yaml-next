@@ -1,0 +1,17 @@
+{
+  "name": "purescript-yaml",
+  "license": "Apache 2.0",
+  "repository": "",
+  "private": true,
+  "contributors": [ ],
+  "main": "main.js",
+  "scripts": {
+    "postinstall": "bower install",
+    "build": "pulp build"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+    "js-yaml": "^3.4.6"
+  }
+}
