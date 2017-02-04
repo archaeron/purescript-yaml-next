@@ -1,11 +1,9 @@
 module Test.Instances where
 
-import Prelude
-import Data.Either
-import Data.Foreign
-import Data.Foreign.Class
-import Data.Generic (Generic, gShow, gEq)
-
+import Prelude (class Eq, class Show, bind, pure, ($))
+import Data.Foreign (ForeignError(..), fail, readString)
+import Data.Foreign.Class (class IsForeign, readProp)
+import Data.Generic (class Generic, gShow, gEq)
 import Data.YAML.Foreign.Encode
 
 data Point = Point Int Int
@@ -41,21 +39,21 @@ instance archiObjectIsForeign :: IsForeign GeoObject where
         points <- readProp "Points"  value
         mobility <- readProp "Mobility"  value
         coverage <- readProp "Coverage"  value
-        return $ GeoObject { name, scale, points, mobility, coverage }
+        pure $ GeoObject { name, scale, points, mobility, coverage }
 
 instance pointIsForeign :: IsForeign Point where
     read value = do
         x <- readProp "X" value
         y <- readProp "Y" value
-        return $ Point x y
+        pure $ Point x y
 
 instance mobilityIsForeign :: IsForeign Mobility where
     read value = do
         mob <- readString value
         case mob of
-            "Fix" -> return Fix
-            "Flex" -> return Flex
-            _ -> Left $ JSONError "Mobility must be either Flex or Fix"
+            "Fix" -> pure Fix
+            "Flex" -> pure Flex
+            _ -> fail $ JSONError "Mobility must be either Flex or Fix"
 
 instance pointToYAML :: ToYAML Point where
     toYAML (Point x y) =
@@ -77,3 +75,4 @@ instance archiObjectToYAML :: ToYAML GeoObject where
             , "Mobility" := o.mobility
             , "Coverage" := o.coverage
             ]
+
