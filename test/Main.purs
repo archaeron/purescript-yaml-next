@@ -1,19 +1,17 @@
 module Test.Main where
 
-import Prelude
-
-import Data.Either
-import Data.Foreign
-import Control.Monad.Eff
-import Control.Monad.Eff.Console (CONSOLE ())
+import Control.Monad.Eff (Eff)
+import Control.Monad.Except (runExcept)
+import Data.Either (Either(..))
+import Data.Foreign (F)
+import Data.YAML.Foreign.Decode (readYAML)
+import Data.YAML.Foreign.Encode (printYAML)
+import Prelude (Unit, bind, ($))
+import Test.Instances (GeoObject(..), Mobility(..), Point(..))
 import Test.Spec (describe, it)
-import Test.Spec.Runner (Process (), run)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
-
-import Data.YAML.Foreign.Decode
-import Data.YAML.Foreign.Encode
-import Test.Instances
+import Test.Spec.Runner (RunnerEffects, run)
 
 yamlInput :: String
 yamlInput = """
@@ -85,14 +83,15 @@ parsedData =
         }
     ]
 
-main :: Eff (console :: CONSOLE, process :: Process) Unit
+main :: Eff (RunnerEffects ()) Unit
 main = run [consoleReporter] do
   describe "purescript-yaml" do
     describe "decode" do
       it "Decodes YAML" do
         let decoded = (readYAML yamlInput) :: F (Array GeoObject)
-        decoded `shouldEqual` (Right parsedData)
+        (runExcept decoded) `shouldEqual` (Right parsedData)
     describe "encode" do
       it "Encodes YAML" $ do
         let encoded = printYAML parsedData
         encoded `shouldEqual` yamlOutput
+

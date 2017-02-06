@@ -15,7 +15,7 @@ type YArray = Array YValue
 #### `YAML`
 
 ``` purescript
-data YAML :: *
+data YAML :: Type
 ```
 
 #### `YValue`
@@ -40,7 +40,7 @@ Eq YValue
 #### `ToYAML`
 
 ``` purescript
-class ToYAML a where
+class ToYAML a  where
   toYAML :: a -> YValue
 ```
 
@@ -60,17 +60,21 @@ ToYAML String
 type Pair = Tuple String YValue
 ```
 
-#### `(:=)`
+#### `entry`
 
 ``` purescript
-(:=) :: forall a. (ToYAML a) => String -> a -> Pair
+entry :: forall a. ToYAML a => String -> a -> Pair
 ```
-
-_left-associative / precedence -1_
 
 Helper function to create a key-value tuple for a YAML object.
 
 `name = "Name" := "This is the name"`
+
+#### `(:=)`
+
+``` purescript
+infixl 4 entry as :=
+```
 
 #### `object`
 
@@ -109,7 +113,7 @@ toYAMLImpl :: YAML -> String
 #### `printYAML`
 
 ``` purescript
-printYAML :: forall a. (ToYAML a) => a -> String
+printYAML :: forall a. ToYAML a => a -> String
 ```
 
 

@@ -1,11 +1,12 @@
 module Data.YAML.Foreign.Encode where
 
-import Data.Function (Fn4(), runFn4)
-import Data.List (fromList, toList)
-import qualified Data.Map as M
-import Data.Maybe (Maybe (), maybe)
-import Data.Tuple (Tuple (..), fst, snd)
-import Prelude (Eq, Show, map, show, ($), (++), (==), (<<<))
+import Data.Map as M
+import Data.Array (fromFoldable, toUnfoldable)
+import Data.Function.Uncurried (Fn4, runFn4)
+import Data.List (List)
+import Data.Maybe (Maybe, maybe)
+import Data.Tuple (Tuple(..), fst, snd)
+import Prelude (class Eq, class Show, map, show, ($), (<>), (==), (<<<))
 import Unsafe.Coerce (unsafeCoerce)
 
 type YObject = M.Map String YValue
@@ -22,12 +23,12 @@ data YValue
     | YNull
 
 instance showYValue :: Show YValue where
-    show (YObject m) = "YObject " ++ show m
-    show (YArray vs) = "YArray " ++ show vs
-    show (YString s) = "YString " ++ show s
-    show (YNumber n) = "YNumber " ++ show n
-    show (YInt i) = "YInt " ++ show i
-    show (YBoolean b) = "YBoolean " ++ show b
+    show (YObject m) = "YObject " <> show m
+    show (YArray vs) = "YArray " <> show vs
+    show (YString s) = "YString " <> show s
+    show (YNumber n) = "YNumber " <> show n
+    show (YInt i) = "YInt " <> show i
+    show (YBoolean b) = "YBoolean " <> show b
     show YNull = "YNull"
 
 instance eqYValue :: Eq YValue where
@@ -66,14 +67,16 @@ type Pair = Tuple String YValue
 -- | Helper function to create a key-value tuple for a YAML object.
 -- |
 -- | `name = "Name" := "This is the name"`
-(:=) :: forall a. (ToYAML a) => String -> a -> Pair
-(:=) name value = Tuple name (toYAML value)
+entry :: forall a. (ToYAML a) => String -> a -> Pair
+entry name value = Tuple name (toYAML value)
+
+infixl 4 entry as :=
 
 -- | Helper function to create a YAML object.
 -- |
 -- | `obj = object [ "Name" := "This is the name", "Size" := 1.5 ]`
 object :: Array Pair -> YValue
-object ps = YObject $ M.fromList $ toList $ ps
+object ps = YObject $ M.fromFoldable (toUnfoldable ps :: List Pair)
 
 foreign import jsNull :: YAML
 foreign import objToHash ::
@@ -84,7 +87,7 @@ foreign import objToHash ::
         YAML
 
 valueToYAML :: YValue -> YAML
-valueToYAML (YObject o) = runFn4 objToHash valueToYAML fst snd $ fromList $ M.toList o
+valueToYAML (YObject o) = runFn4 objToHash valueToYAML fst snd $ fromFoldable $ M.toList o
 valueToYAML (YArray a) = unsafeCoerce $ map valueToYAML a
 valueToYAML (YString s) = unsafeCoerce s
 valueToYAML (YNumber n) = unsafeCoerce n
@@ -96,3 +99,4 @@ foreign import toYAMLImpl :: YAML -> String
 
 printYAML :: forall a. (ToYAML a) => a -> String
 printYAML = toYAMLImpl <<< valueToYAML <<< toYAML
+
