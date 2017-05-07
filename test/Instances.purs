@@ -44,21 +44,17 @@ readGeoObject value = do
 
 readPoint :: Foreign -> F Point
 readPoint value = do
--- instance pointIsForeign :: IsForeign Point where
---     read value = do
-        x <- readInt =<< readProp "X" value
-        y <- readInt =<< readProp "Y" value
-        pure $ Point x y
+  x <- readInt =<< readProp "X" value
+  y <- readInt =<< readProp "Y" value
+  pure $ Point x y
 
 readMobility :: Foreign -> F Mobility
 readMobility value = do
--- instance mobilityIsForeign :: IsForeign Mobility where
-    -- read value = do
-        mob <- readString value
-        case mob of
-            "Fix" -> pure Fix
-            "Flex" -> pure Flex
-            _ -> fail $ JSONError "Mobility must be either Flex or Fix"
+  mob <- readString value
+  case mob of
+      "Fix" -> pure Fix
+      "Flex" -> pure Flex
+      _ -> fail $ JSONError "Mobility must be either Flex or Fix"
 
 instance pointToYAML :: ToYAML Point where
     toYAML (Point x y) =
