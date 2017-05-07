@@ -18,31 +18,32 @@ data GeoObject = GeoObject
 
 ## Decode YAML
 
-Write `IsForeign` instances for your data structures.
+Write functions to read your data from foreign values.
 
 ```purescript
-instance pointIsForeign :: IsForeign Point where
-    read value = do
-        x <- readProp "X" value
-        y <- readProp "Y" value
-        return $ Point x y
+readPoint :: Foreign -> F Point
+readPoint value = do
+  x <- readInt =<< readProp "X" value
+  y <- readInt =<< readProp "Y" value
+  pure $ Point x y
 
-instance mobilityIsForeign :: IsForeign Mobility where
-    read value = do
-        mob <- readString value
-        case mob of
-            "Fix" -> return Fix
-            "Flex" -> return Flex
-            _ -> Left $ JSONError "Mobility must be either Flex or Fix"
+readMobility :: Foreign -> F Mobility
+readMobility value = do
+  mob <- readString value
+  case mob of
+      "Fix" -> pure Fix
+      "Flex" -> pure Flex
+      _ -> fail $ JSONError "Mobility must be either Flex or Fix"
 
-instance archiObjectIsForeign :: IsForeign GeoObject where
-    read value = do
-        name <- readProp "Name"  value
-        scale <- readProp "Scale"  value
-        points <- readProp "Points"  value
-        mobility <- readProp "Mobility"  value
-        coverage <- readProp "Coverage"  value
-        return $ GeoObject { name, scale, points, mobility, coverage }
+readGeoObject :: Foreign -> F GeoObject
+readGeoObject value = do
+  name <- readString =<< readProp "Name"  value
+  scale <- readNumber =<< readProp "Scale"  value
+  points <- traverse readPoint =<< readArray =<< readProp "Points"  value
+  mobility <- readMobility =<< readProp "Mobility"  value
+  coverage <- readNumber =<< readProp "Coverage"  value
+  pure $ GeoObject { name, scale, points, mobility, coverage }
+
 ```
 
 Read the YAML into your data structures.
@@ -74,7 +75,10 @@ yamlInput = """
   Coverage: 10
 """
 
-decoded = (readYAML yamlInput) :: F (Array GeoObject)
+let decoded =
+      (parseYAML yamlInput) >>=
+      readArray >>=
+      traverse readGeoObject
 ```
 
 ## Encode YAML

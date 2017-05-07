@@ -12,14 +12,13 @@
   ],
   "dependencies": {
     "js-yaml": "^3.4.6",
-    "purescript-functions": "^2.0.0",
-    "purescript-foreign": "^3.2.0",
-    "purescript-foreign-generic": "^3.0.0",
-    "purescript-unsafe-coerce": "^2.0.0"
+    "purescript-functions": "^3.0.0",
+    "purescript-foreign": "^4.0.0",
+    "purescript-foreign-generic": "^4.1.0",
+    "purescript-unsafe-coerce": "^3.0.0"
   },
   "devDependencies": {
-    "purescript-console": "^2.0.0",
-    "purescript-spec": "~0.12.1"
+    "purescript-console": "^3.0.0",
+    "purescript-spec": "^1.0.0"
   }
 }
-
