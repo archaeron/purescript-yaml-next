@@ -1,8 +1,9 @@
 module Test.Instances where
 
-import Prelude (class Eq, class Show, bind, pure, ($))
-import Data.Foreign (ForeignError(..), fail, readString)
-import Data.Foreign.Class (class IsForeign, readProp)
+import Prelude (class Eq, class Show, bind, pure, ($), (=<<), (<$>), map, (<=<))
+import Data.Traversable (traverse)
+import Data.Foreign (readArray, readNumber, readString, readInt, F, Foreign, ForeignError(..), fail, readString)
+import Data.Foreign.Index (readProp)
 import Data.Generic (class Generic, gShow, gEq)
 import Data.YAML.Foreign.Encode
 
@@ -32,23 +33,27 @@ derive instance genericMobility :: Generic Mobility
 instance showMobility :: Show Mobility where show = gShow
 instance eqMobility :: Eq Mobility where eq = gEq
 
-instance archiObjectIsForeign :: IsForeign GeoObject where
-    read value = do
-        name <- readProp "Name"  value
-        scale <- readProp "Scale"  value
-        points <- readProp "Points"  value
-        mobility <- readProp "Mobility"  value
-        coverage <- readProp "Coverage"  value
-        pure $ GeoObject { name, scale, points, mobility, coverage }
+readGeoObject :: Foreign -> F GeoObject
+readGeoObject value = do
+  name <- readString =<< readProp "Name"  value
+  scale <- readNumber =<< readProp "Scale"  value
+  points <- traverse readPoint =<< readArray =<< readProp "Points"  value
+  mobility <- readMobility =<< readProp "Mobility"  value
+  coverage <- readNumber =<< readProp "Coverage"  value
+  pure $ GeoObject { name, scale, points, mobility, coverage }
 
-instance pointIsForeign :: IsForeign Point where
-    read value = do
-        x <- readProp "X" value
-        y <- readProp "Y" value
+readPoint :: Foreign -> F Point
+readPoint value = do
+-- instance pointIsForeign :: IsForeign Point where
+--     read value = do
+        x <- readInt =<< readProp "X" value
+        y <- readInt =<< readProp "Y" value
         pure $ Point x y
 
-instance mobilityIsForeign :: IsForeign Mobility where
-    read value = do
+readMobility :: Foreign -> F Mobility
+readMobility value = do
+-- instance mobilityIsForeign :: IsForeign Mobility where
+    -- read value = do
         mob <- readString value
         case mob of
             "Fix" -> pure Fix
@@ -75,4 +80,3 @@ instance archiObjectToYAML :: ToYAML GeoObject where
             , "Mobility" := o.mobility
             , "Coverage" := o.coverage
             ]
-

@@ -3,15 +3,17 @@ module Test.Main where
 import Control.Monad.Eff (Eff)
 import Control.Monad.Except (runExcept)
 import Data.Either (Either(..))
-import Data.Foreign (F)
-import Data.YAML.Foreign.Decode (readYAML)
+import Data.Foreign (F, readArray)
+import Data.YAML.Foreign.Decode (parseYAML)
 import Data.YAML.Foreign.Encode (printYAML)
-import Prelude (Unit, bind, ($))
-import Test.Instances (GeoObject(..), Mobility(..), Point(..))
+import Data.Traversable (traverse)
+import Prelude (Unit, bind, ($), void, discard, (>>=))
+import Test.Instances (readGeoObject, readMobility, readPoint, GeoObject(..), Mobility(..), Point(..))
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (RunnerEffects, run)
+import Control.Monad.Eff.Console (log, CONSOLE)
 
 yamlInput :: String
 yamlInput = """
@@ -41,9 +43,7 @@ yamlInput = """
 """
 
 yamlOutput :: String
-yamlOutput = """- Coverage: 10
-  Mobility: Fix
-  Name: House
+yamlOutput = """- Mobility: Fix
   Points:
     - X: 10
       'Y': 10
@@ -51,10 +51,10 @@ yamlOutput = """- Coverage: 10
       'Y': 10
     - X: 5
       'Y': 5
+  Coverage: 10
+  Name: House
   Scale: 9.5
-- Coverage: 10
-  Mobility: Fix
-  Name: Tree
+- Mobility: Fix
   Points:
     - X: 1
       'Y': 1
@@ -62,6 +62,8 @@ yamlOutput = """- Coverage: 10
       'Y': 2
     - X: 0
       'Y': 0
+  Coverage: 10
+  Name: Tree
   Scale: 1
 """
 
@@ -85,13 +87,15 @@ parsedData =
 
 main :: Eff (RunnerEffects ()) Unit
 main = run [consoleReporter] do
-  describe "purescript-yaml" do
+  void $ describe "purescript-yaml" do
     describe "decode" do
       it "Decodes YAML" do
-        let decoded = (readYAML yamlInput) :: F (Array GeoObject)
+        let decoded =
+              (parseYAML yamlInput) >>=
+              readArray >>=
+              traverse readGeoObject
         (runExcept decoded) `shouldEqual` (Right parsedData)
-    describe "encode" do
+    void $ describe "encode" do
       it "Encodes YAML" $ do
         let encoded = printYAML parsedData
         encoded `shouldEqual` yamlOutput
-

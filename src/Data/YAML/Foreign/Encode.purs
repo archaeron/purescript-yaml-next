@@ -1,7 +1,7 @@
 module Data.YAML.Foreign.Encode where
 
 import Data.Map as M
-import Data.Array (fromFoldable, toUnfoldable)
+import Data.Array (toUnfoldable)
 import Data.Function.Uncurried (Fn4, runFn4)
 import Data.List (List)
 import Data.Maybe (Maybe, maybe)
@@ -11,7 +11,7 @@ import Unsafe.Coerce (unsafeCoerce)
 
 type YObject = M.Map String YValue
 type YArray = Array YValue
-foreign import data YAML :: *
+foreign import data YAML :: Type
 
 data YValue
     = YObject YObject
@@ -87,7 +87,7 @@ foreign import objToHash ::
         YAML
 
 valueToYAML :: YValue -> YAML
-valueToYAML (YObject o) = runFn4 objToHash valueToYAML fst snd $ fromFoldable $ M.toList o
+valueToYAML (YObject o) = runFn4 objToHash valueToYAML fst snd $ M.toUnfoldable o
 valueToYAML (YArray a) = unsafeCoerce $ map valueToYAML a
 valueToYAML (YString s) = unsafeCoerce s
 valueToYAML (YNumber n) = unsafeCoerce n
@@ -99,4 +99,3 @@ foreign import toYAMLImpl :: YAML -> String
 
 printYAML :: forall a. (ToYAML a) => a -> String
 printYAML = toYAMLImpl <<< valueToYAML <<< toYAML
-
