@@ -14,6 +14,10 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (RunnerEffects, run)
 import Control.Monad.Eff.Console (log, CONSOLE)
+import Data.Map as Map
+import Data.Map (Map)
+import Data.StrMap as StrMap
+import Data.StrMap (StrMap)
 
 yamlInput :: String
 yamlInput = """
@@ -67,6 +71,40 @@ yamlOutput = """- Mobility: Fix
   Scale: 1
 """
 
+
+yamlMapOutput :: String
+yamlMapOutput = """key:
+  - Mobility: Fix
+    Points:
+      - X: 10
+        'Y': 10
+      - X: 20
+        'Y': 10
+      - X: 5
+        'Y': 5
+    Coverage: 10
+    Name: House
+    Scale: 9.5
+  - Mobility: Fix
+    Points:
+      - X: 1
+        'Y': 1
+      - X: 2
+        'Y': 2
+      - X: 0
+        'Y': 0
+    Coverage: 10
+    Name: Tree
+    Scale: 1
+"""
+
+testStrMap :: StrMap (Array GeoObject)
+testStrMap = StrMap.singleton "key" parsedData
+
+testMap :: Map String (Array GeoObject)
+testMap = Map.singleton "key" parsedData
+
+
 parsedData :: Array GeoObject
 parsedData =
     [ GeoObject
@@ -87,7 +125,7 @@ parsedData =
 
 main :: Eff (RunnerEffects ()) Unit
 main = run [consoleReporter] do
-  void $ describe "purescript-yaml" do
+  describe "purescript-yaml" do
     describe "decode" do
       it "Decodes YAML" do
         let decoded =
@@ -95,7 +133,13 @@ main = run [consoleReporter] do
               readArray >>=
               traverse readGeoObject
         (runExcept decoded) `shouldEqual` (Right parsedData)
-    void $ describe "encode" do
+    describe "encode" do
       it "Encodes YAML" $ do
         let encoded = printYAML parsedData
         encoded `shouldEqual` yamlOutput
+
+        let encodedStrMap = printYAML testStrMap
+        encodedStrMap `shouldEqual` yamlMapOutput
+
+        let encodedMap = printYAML testMap
+        encodedMap `shouldEqual` yamlMapOutput

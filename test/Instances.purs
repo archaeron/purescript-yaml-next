@@ -1,8 +1,8 @@
 module Test.Instances where
 
-import Prelude (class Eq, class Show, bind, pure, ($), (=<<), (<$>), map, (<=<))
+import Prelude (class Eq, class Show, bind, pure, ($), (=<<))
 import Data.Traversable (traverse)
-import Data.Foreign (readArray, readNumber, readString, readInt, F, Foreign, ForeignError(..), fail, readString)
+import Data.Foreign (readArray, readNumber, readString, readInt, F, Foreign, ForeignError(..), fail)
 import Data.Foreign.Index (readProp)
 import Data.Generic (class Generic, gShow, gEq)
 import Data.YAML.Foreign.Encode

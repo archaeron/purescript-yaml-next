@@ -1,12 +1,13 @@
 module Data.YAML.Foreign.Encode where
 
 import Data.Map as M
+import Data.Map (Map)
 import Data.StrMap as StrMap
+import Data.StrMap (StrMap)
 import Data.Array (toUnfoldable)
 import Data.Function.Uncurried (Fn4, runFn4)
 import Data.List (List)
 import Data.Maybe (Maybe, maybe)
-import Data.StrMap (StrMap, insert)
 import Data.Tuple (Tuple(..), fst, snd)
 import Prelude (class Eq, class Show, map, show, ($), (<>), (==), (<<<))
 import Unsafe.Coerce (unsafeCoerce)
@@ -48,6 +49,9 @@ class ToYAML a where
 
 instance strMapToYAML :: (ToYAML a) => ToYAML (StrMap a) where
     toYAML strMap = YObject $ StrMap.fold (\acc key value -> M.insert key (toYAML value) acc) M.empty strMap
+
+instance mapToYAML :: (ToYAML a) => ToYAML (Map String a) where
+    toYAML m = YObject $ M.mapWithKey (\key value -> toYAML value) m
 
 instance booleanToYAML :: ToYAML Boolean where
     toYAML = YBoolean
