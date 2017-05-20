@@ -1,4 +1,11 @@
-module Data.YAML.Foreign.Encode where
+module Data.YAML.Foreign.Encode (
+  YValue,
+  class ToYAML,
+  toYAML,
+  entry, (:=),
+  object,
+  printYAML
+  ) where
 
 import Data.Map as M
 import Data.Map (Map)

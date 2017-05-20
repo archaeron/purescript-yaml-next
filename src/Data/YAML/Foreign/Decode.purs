@@ -1,4 +1,7 @@
-module Data.YAML.Foreign.Decode (parseYAML, readYAMLGeneric, parseYAMLToJson) where
+module Data.YAML.Foreign.Decode (
+  readYAMLGeneric,
+  parseYAMLToJson
+  ) where
 
 import Data.Foreign (F, Foreign, ForeignError(..), fail)
 import Data.Foreign.Generic (genericDecode)

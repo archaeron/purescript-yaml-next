@@ -8,7 +8,9 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "output"
+    "output",
+    "test",
+    "docs"
   ],
   "dependencies": {
     "js-yaml": "^3.4.6",
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "purescript-console": "^3.0.0",
-    "purescript-spec": "^1.0.0"
+    "purescript-spec": "^1.0.0",
+    "purescript-argonaut-codecs": "^3.0.1"
   }
 }
