@@ -1,11 +1,13 @@
 module Test.Instances where
 
-import Prelude (class Eq, class Show, bind, pure, ($), (=<<), (<$>), map, (<=<))
-import Data.Traversable (traverse)
-import Data.Foreign (readArray, readNumber, readString, readInt, F, Foreign, ForeignError(..), fail, readString)
-import Data.Foreign.Index (readProp)
-import Data.Generic (class Generic, gShow, gEq)
 import Data.YAML.Foreign.Encode
+import Data.Argonaut.Core (toObject, toString)
+import Data.Argonaut.Decode (getField)
+import Data.Argonaut.Decode.Class (class DecodeJson)
+import Data.Either (Either(..))
+import Data.Generic (class Generic, gShow, gEq)
+import Data.Maybe (maybe)
+import Prelude (class Eq, class Show, bind, pure, ($))
 
 data Point = Point Int Int
 
@@ -33,28 +35,31 @@ derive instance genericMobility :: Generic Mobility
 instance showMobility :: Show Mobility where show = gShow
 instance eqMobility :: Eq Mobility where eq = gEq
 
-readGeoObject :: Foreign -> F GeoObject
-readGeoObject value = do
-  name <- readString =<< readProp "Name"  value
-  scale <- readNumber =<< readProp "Scale"  value
-  points <- traverse readPoint =<< readArray =<< readProp "Points"  value
-  mobility <- readMobility =<< readProp "Mobility"  value
-  coverage <- readNumber =<< readProp "Coverage"  value
-  pure $ GeoObject { name, scale, points, mobility, coverage }
+instance geoJson :: DecodeJson GeoObject where
+  decodeJson s = do
+    obj <- maybe (Left "GeoObject is not an object.") Right (toObject s)
+    name <- getField obj "Name"
+    scale <- getField obj "Scale"
+    points <- getField obj "Points"
+    mobility <- getField obj "Mobility"
+    coverage <- getField obj "Coverage"
+    pure $ GeoObject { name, scale, points, mobility, coverage }
 
-readPoint :: Foreign -> F Point
-readPoint value = do
-  x <- readInt =<< readProp "X" value
-  y <- readInt =<< readProp "Y" value
-  pure $ Point x y
+instance mobilityJson :: DecodeJson Mobility where
+  decodeJson s = do
+    mob <- maybe (Left "Mobility is not a string.") Right (toString s)
+    case mob of
+        "Fix" -> pure Fix
+        "Flex" -> pure Flex
+        _ -> Left "Mobility must be either Flex or Fix"
 
-readMobility :: Foreign -> F Mobility
-readMobility value = do
-  mob <- readString value
-  case mob of
-      "Fix" -> pure Fix
-      "Flex" -> pure Flex
-      _ -> fail $ JSONError "Mobility must be either Flex or Fix"
+instance pointJson :: DecodeJson Point where
+  decodeJson s = do
+    obj <- maybe (Left "Point is not an object.") Right (toObject s)
+    x <- getField obj "X"
+    y <- getField obj "Y"
+    pure $ Point x y
+
 
 instance pointToYAML :: ToYAML Point where
     toYAML (Point x y) =
