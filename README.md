@@ -1,4 +1,4 @@
-# purescript-yaml
+# purescript-yaml-next
 
 ## Install
 
