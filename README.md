@@ -2,18 +2,14 @@
 
 ## Install
 
-This repo depends on js-yaml, so you'll need to install js-yaml in your
-project.  It is not compatible with YAML 1.1.
-
+This repo depends on js-yaml.  It is not compatible with YAML 1.1.
 ```
 npm install js-yaml@^3.4.6
 ```
-
-Then, if you're using bower, add the this repo as a project dependency, e.g.
-
+If you're using bower, add this repo as a project dependency, e.g.
 
 ```
-bower install git://github.com/dgendill/purescript-yaml#1.0.0
+bower install --save git://github.com/dgendill/purescript-yaml#0.1.0
 ```
 
 Or you can manually add the github repo as a project dependency, e.g.
@@ -26,8 +22,7 @@ Or you can manually add the github repo as a project dependency, e.g.
 
 ## YAML to Data Type Usage
 
-Assuming we have the following Point data type and yaml...
-
+Assuming we have the following `Point` data type and YAML string...
 
 ```purescript
 data Point = Point Int Int
@@ -39,12 +34,12 @@ Y: 1
 """
 ```
 
-We can read a `Point` from the yaml by convertion the YAML into JSON
+We can read a `Point` from the YAML by converting the YAML into JSON
 and then using [purescript-argonaut](https://github.com/purescript-contrib/purescript-argonaut)'s encoding functionality to get the
 type we need (specifically, [purescript-argonaut-codecs](https://github.com/purescript-contrib/purescript-argonaut-codecs)
 functionality).
 
-```
+```purescript
 getPoint :: Either String Point
 getPoint = case runExcept $ parseYAMLToJson yamlPoint of
   Left err -> Left "Could not parse yaml"
@@ -63,7 +58,7 @@ instance pointJson :: DecodeJson Point where
 
 YAML is represented with the following data type.
 
-```
+```purescript
 data YValue
     = YObject (M.Map String YValue)
     | YArray (Array YValue)
@@ -74,7 +69,7 @@ data YValue
     | YNull
 ```
 
-To convert data into YValue, create instances of the ToYAML class for your
+To convert data into a aYValue, create instances of the ToYAML class for your
 data types.
 
 ```purescript
@@ -98,7 +93,7 @@ instance pointToYAML :: ToYAML Point where
 You can find helper functions for converting basic types into `YValue`
 in the Data.YAML.Foreign.Encode module.
 
-Finally, if you want to convert YValue into a String, you can use the
+Finally, if you want to convert `YValue` into a String, you can use the
 `printYAML` function from Data.YAML.Foreign.Encode.
 
 
@@ -111,7 +106,7 @@ printYAML :: forall a. (ToYAML a) => a -> String
 Using the previous code and the type classes we defined earlier, we can go
 full circle from a YAML string to a PureScript Data Type and back to a YAML string.
 
-```
+```purescript
 fullCircle :: String -> Either String String
 fullCircle yamlString = (readPoint yamlString) >>= pure <<< printYAML
 ```
