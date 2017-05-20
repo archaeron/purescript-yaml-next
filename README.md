@@ -9,7 +9,7 @@ npm install js-yaml@^3.4.6
 If you're using bower, add this repo as a project dependency, e.g.
 
 ```
-bower install --save git://github.com/dgendill/purescript-yaml#0.1.0
+bower install --save git://github.com/dgendill/purescript-yaml#v0.1.0
 ```
 
 Or you can manually add the github repo as a project dependency, e.g.
