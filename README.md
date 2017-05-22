@@ -2,22 +2,22 @@
 
 ## Install
 
-This repo depends on js-yaml.  It is not compatible with YAML 1.1.
+First install [js-yaml](https://github.com/connec/yaml-js).  Note, purescript-yaml is not compatible with YAML 1.1.
+
 ```
 npm install js-yaml@^3.4.6
 ```
-If you're using bower, add this repo as a project dependency, e.g.
+
+Then add purescript-yaml-next as a project dependency.
 
 ```
-bower install --save git://github.com/dgendill/purescript-yaml#v0.1.0
+bower install --save purescript-yaml-next
 ```
 
-Or you can manually add the github repo as a project dependency, e.g.
+Alternatively, you can add the repo itself as a project dependency, e.g.
 
 ```
-"dependencies": {
-  "purescript-yaml" : git://github.com/dgendill/purescript-yaml#tagOrBranch
-}
+bower install --save git://github.com/archaeron/purescript-yaml#tagOrBranch
 ```
 
 ## YAML to Data Type Usage
