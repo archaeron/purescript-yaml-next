@@ -9,8 +9,6 @@ module Data.YAML.Foreign.Encode (
 
 import Data.Map as M
 import Data.Map (Map)
-import Data.StrMap as StrMap
-import Data.StrMap (StrMap)
 import Data.Array (toUnfoldable)
 import Data.Function.Uncurried (Fn4, runFn4)
 import Data.List (List)
@@ -54,11 +52,8 @@ instance eqYValue :: Eq YValue where
 class ToYAML a where
     toYAML :: a -> YValue
 
-instance strMapToYAML :: (ToYAML a) => ToYAML (StrMap a) where
-    toYAML strMap = YObject $ StrMap.fold (\acc key value -> M.insert key (toYAML value) acc) M.empty strMap
-
 instance mapToYAML :: (ToYAML a) => ToYAML (Map String a) where
-    toYAML m = YObject $ M.mapWithKey (\key value -> toYAML value) m
+    toYAML m = YObject $ map (\value -> toYAML value) m
 
 instance booleanToYAML :: ToYAML Boolean where
     toYAML = YBoolean
