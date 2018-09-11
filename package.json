@@ -3,15 +3,14 @@
   "license": "SEE LICENSE FILE",
   "repository": "",
   "private": true,
-  "contributors": [ ],
+  "contributors": [],
   "main": "main.js",
   "scripts": {
     "postinstall": "bower install",
     "build": "pulp build"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
-    "js-yaml": "^3.4.6"
+    "js-yaml": "^3.12.0"
   }
 }

@@ -1,21 +1,19 @@
 module Test.Main where
 
 import Data.Map as Map
-import Data.StrMap as StrMap
-import Control.Monad.Eff (Eff)
 import Control.Monad.Except (runExcept)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Either (Either(..))
 import Data.Map (Map)
-import Data.StrMap (StrMap)
 import Data.YAML.Foreign.Decode (parseYAMLToJson)
 import Data.YAML.Foreign.Encode (printYAML)
+import Effect
 import Prelude (Unit, discard, pure, ($), (<<<), (>>=))
 import Test.Instances (GeoObject(..), Mobility(..), Point(..))
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner (RunnerEffects, run)
+import Test.Spec.Runner (run)
 
 yamlInput :: String
 yamlInput = """
@@ -45,7 +43,9 @@ yamlInput = """
 """
 
 yamlOutput :: String
-yamlOutput = """- Mobility: Fix
+yamlOutput = """- Coverage: 10
+  Mobility: Fix
+  Name: House
   Points:
     - X: 10
       Y: 10
@@ -53,10 +53,10 @@ yamlOutput = """- Mobility: Fix
       Y: 10
     - X: 5
       Y: 5
-  Coverage: 10
-  Name: House
   Scale: 9.5
-- Mobility: Fix
+- Coverage: 10
+  Mobility: Fix
+  Name: Tree
   Points:
     - X: 1
       Y: 1
@@ -64,15 +64,15 @@ yamlOutput = """- Mobility: Fix
       Y: 2
     - X: 0
       Y: 0
-  Coverage: 10
-  Name: Tree
   Scale: 1
 """
 
 
 yamlMapOutput :: String
 yamlMapOutput = """key:
-  - Mobility: Fix
+  - Coverage: 10
+    Mobility: Fix
+    Name: House
     Points:
       - X: 10
         Y: 10
@@ -80,10 +80,10 @@ yamlMapOutput = """key:
         Y: 10
       - X: 5
         Y: 5
-    Coverage: 10
-    Name: House
     Scale: 9.5
-  - Mobility: Fix
+  - Coverage: 10
+    Mobility: Fix
+    Name: Tree
     Points:
       - X: 1
         Y: 1
@@ -91,8 +91,6 @@ yamlMapOutput = """key:
         Y: 2
       - X: 0
         Y: 0
-    Coverage: 10
-    Name: Tree
     Scale: 1
 """
 
@@ -106,8 +104,6 @@ yamlToData s = case runExcept $ parseYAMLToJson s of
   Left err -> Left "Could not parse yaml"
   Right json -> decodeJson json
 
-testStrMap :: StrMap (Array GeoObject)
-testStrMap = StrMap.singleton "key" parsedData
 
 testMap :: Map String (Array GeoObject)
 testMap = Map.singleton "key" parsedData
@@ -137,7 +133,7 @@ readPoint = yamlToData
 fullCircle :: String -> Either String String
 fullCircle yamlString = (readPoint yamlString) >>= pure <<< printYAML
 
-main :: Eff (RunnerEffects ()) Unit
+main :: Effect Unit
 main = run [consoleReporter] do
   describe "purescript-yaml" do
     describe "decode" do
@@ -148,9 +144,6 @@ main = run [consoleReporter] do
       it "Encodes YAML" $ do
         let encoded = printYAML parsedData
         encoded `shouldEqual` yamlOutput
-
-        let encodedStrMap = printYAML testStrMap
-        encodedStrMap `shouldEqual` yamlMapOutput
 
         let encodedMap = printYAML testMap
         encodedMap `shouldEqual` yamlMapOutput
