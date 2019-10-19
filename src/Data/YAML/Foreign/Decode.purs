@@ -5,8 +5,7 @@ module Data.YAML.Foreign.Decode (
 
 import Foreign (F, Foreign, ForeignError(..), fail)
 import Foreign.Generic (genericDecode)
-import Foreign.Generic.Class (class GenericDecode)
-import Foreign.Generic.Types (Options)
+import Foreign.Generic.Class (class GenericDecode, Options)
 import Data.Function.Uncurried (Fn3, runFn3)
 import Data.Generic.Rep (class Generic)
 import Prelude ((>=>), (<<<), pure, (>>=))
