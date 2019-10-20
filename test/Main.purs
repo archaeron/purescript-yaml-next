@@ -1,19 +1,21 @@
 module Test.Main where
 
-import Data.Map as Map
 import Control.Monad.Except (runExcept)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Either (Either(..))
 import Data.Map (Map)
+import Data.Map as Map
 import Data.YAML.Foreign.Decode (parseYAMLToJson)
 import Data.YAML.Foreign.Encode (printYAML)
-import Effect
+import Effect (Effect)
+import Effect.Aff (launchAff_)
 import Prelude (Unit, discard, pure, ($), (<<<), (>>=))
 import Test.Instances (GeoObject(..), Mobility(..), Point(..))
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner (run)
+import Test.Spec.Runner (runSpec)
+
 
 yamlInput :: String
 yamlInput = """
@@ -134,7 +136,7 @@ fullCircle :: String -> Either String String
 fullCircle yamlString = (readPoint yamlString) >>= pure <<< printYAML
 
 main :: Effect Unit
-main = run [consoleReporter] do
+main = launchAff_ $ runSpec [consoleReporter] do
   describe "purescript-yaml" do
     describe "decode" do
       it "Decodes YAML" do

@@ -2,7 +2,7 @@ module Test.Instances where
 
 import Data.YAML.Foreign.Encode
 import Data.Argonaut.Core (toObject, toString)
-import Data.Argonaut.Decode (getField)
+import Data.Argonaut.Decode.Combinators (getField)
 import Data.Argonaut.Decode.Class (class DecodeJson)
 import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)

@@ -1,16 +1,15 @@
 {
   "name": "purescript-yaml-next",
   "license": "SEE LICENSE FILE",
-  "repository": "",
+  "repository": "https://github.com/archaeron/purescript-yaml",
   "private": true,
   "contributors": [],
   "main": "main.js",
   "scripts": {
-    "postinstall": "bower install",
-    "build": "pulp build"
+    "postinstall": "spago build"
   },
   "devDependencies": {},
   "dependencies": {
-    "js-yaml": "^3.12.0"
+    "js-yaml": "^3.13.1"
   }
 }
