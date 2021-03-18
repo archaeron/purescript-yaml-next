@@ -1,14 +1,14 @@
 module Test.Instances where
 
 import Data.YAML.Foreign.Encode
-import Data.Argonaut.Core (toObject, toString)
+import Data.Argonaut.Decode (decodeJson)
 import Data.Argonaut.Decode.Combinators (getField)
 import Data.Argonaut.Decode.Class (class DecodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Eq (genericEq)
-import Data.Generic.Rep.Show (genericShow)
-import Data.Maybe (maybe)
+import Data.Eq.Generic (genericEq)
+import Data.Show.Generic (genericShow)
 import Prelude (class Eq, class Show, bind, pure, ($))
 
 data Point = Point Int Int
@@ -38,8 +38,8 @@ instance showMobility :: Show Mobility where show = genericShow
 instance eqMobility :: Eq Mobility where eq = genericEq
 
 instance geoJson :: DecodeJson GeoObject where
-  decodeJson s = do
-    obj <- maybe (Left "GeoObject is not an object.") Right (toObject s)
+  decodeJson json = do
+    obj <- decodeJson json
     name <- getField obj "Name"
     scale <- getField obj "Scale"
     points <- getField obj "Points"
@@ -48,16 +48,17 @@ instance geoJson :: DecodeJson GeoObject where
     pure $ GeoObject { name, scale, points, mobility, coverage }
 
 instance mobilityJson :: DecodeJson Mobility where
-  decodeJson s = do
-    mob <- maybe (Left "Mobility is not a string.") Right (toString s)
+  decodeJson json = do
+    mob <- decodeJson json
     case mob of
         "Fix" -> pure Fix
         "Flex" -> pure Flex
-        _ -> Left "Mobility must be either Flex or Fix"
+        _ -> Left $ TypeMismatch "Mobility must be either Flex or Fix"
+
 
 instance pointJson :: DecodeJson Point where
-  decodeJson s = do
-    obj <- maybe (Left "Point is not an object.") Right (toObject s)
+  decodeJson json = do
+    obj <- decodeJson json
     x <- getField obj "X"
     y <- getField obj "Y"
     pure $ Point x y

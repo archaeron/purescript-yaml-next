@@ -6,7 +6,6 @@
     , "console"
     , "effect"
     , "foreign"
-    , "foreign-generic"
     , "functions"
     , "ordered-collections"
     , "psci-support"
