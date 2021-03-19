@@ -6,7 +6,7 @@
   "contributors": [],
   "main": "main.js",
   "scripts": {
-    "test": "spago test",
+    "test": "spago -x test.dhall test",
     "postinstall": "spago build"
   },
   "devDependencies": {},
