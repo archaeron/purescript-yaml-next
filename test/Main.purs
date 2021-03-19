@@ -2,6 +2,7 @@ module Test.Main where
 
 import Control.Monad.Except (runExcept)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Decode.Error (printJsonDecodeError)
 import Data.Either (Either(..))
 import Data.Map (Map)
 import Data.Map as Map
@@ -103,8 +104,10 @@ Y: 1
 
 yamlToData :: forall a. (DecodeJson a) => String -> Either String a
 yamlToData s = case runExcept $ parseYAMLToJson s of
-  Left err -> Left "Could not parse yaml"
-  Right json -> decodeJson json
+  Left err -> Left "Could not parse YAML"
+  Right json -> case decodeJson json of
+    Left error -> Left $ printJsonDecodeError error
+    Right value -> Right value
 
 
 testMap :: Map String (Array GeoObject)

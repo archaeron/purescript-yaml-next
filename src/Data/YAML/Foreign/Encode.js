@@ -14,5 +14,5 @@ exports.objToHash = function(valueToYAMLImpl, fst, snd, obj) {
 
 exports.toYAMLImpl = function(a) {
 	// noCompatMode does not support YAML 1.1
-	return yaml.safeDump(a, {noCompatMode : true});
+	return yaml.dump(a, {noCompatMode : true});
 }
