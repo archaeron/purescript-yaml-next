@@ -1,18 +1,15 @@
-{ name =
-    "yaml-next"
+{ name = "yaml-next"
 , license = "MIT"
-, repository = "https://github.com/archaeron/purescript-yaml"
+, repository = "https://github.com/archaeron/purescript-yaml-next"
 , dependencies =
-    [ "argonaut-codecs"
-    , "argonaut-core"
-    , "effect"
-    , "foreign"
-    , "functions"
-    , "ordered-collections"
-    , "unsafe-coerce"
-    ]
-, packages =
-    ./packages.dhall
-, sources =
-    [ "src/**/*.purs" ]
+  [ "argonaut-codecs"
+  , "argonaut-core"
+  , "effect"
+  , "foreign"
+  , "functions"
+  , "ordered-collections"
+  , "unsafe-coerce"
+  ]
+, packages = ./packages.dhall
+, sources = [ "src/**/*.purs" ]
 }
