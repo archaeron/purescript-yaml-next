@@ -2,23 +2,10 @@
 
 ## Install
 
-First install [js-yaml](https://github.com/connec/yaml-js).  Note, purescript-yaml is not compatible with YAML 1.1.
-
 ```
-npm install js-yaml@^3.4.6
+spago install yaml-next
 ```
 
-Then add purescript-yaml-next as a project dependency.
-
-```
-bower install --save purescript-yaml-next
-```
-
-Alternatively, you can add the repo itself as a project dependency, e.g.
-
-```
-bower install --save git://github.com/archaeron/purescript-yaml#tagOrBranch
-```
 
 ## YAML to Data Type Usage
 
@@ -35,9 +22,13 @@ Y: 1
 ```
 
 We can read a `Point` from the YAML by converting the YAML into JSON
-and then using [purescript-argonaut](https://github.com/purescript-contrib/purescript-argonaut)'s encoding functionality to get the
-type we need (specifically, [purescript-argonaut-codecs](https://github.com/purescript-contrib/purescript-argonaut-codecs)
+and then using [purescript-argonaut]'s encoding functionality to get the
+type we need (specifically, [purescript-argonaut-codecs]
 functionality).
+
+[purescript-argonaut]: https://github.com/purescript-contrib/purescript-argonaut
+[purescript-argonaut-codecs]:
+    https://github.com/purescript-contrib/purescript-argonaut-codecs
 
 ```purescript
 getPoint :: Either String Point
@@ -69,7 +60,7 @@ data YValue
     | YNull
 ```
 
-To convert data into a aYValue, create instances of the ToYAML class for your
+To convert data into a `YValue`, create instances of the `ToYAML` class for your
 data types.
 
 ```purescript
@@ -91,32 +82,32 @@ instance pointToYAML :: ToYAML Point where
 ```
 
 You can find helper functions for converting basic types into `YValue`
-in the Data.YAML.Foreign.Encode module.
+in the `Data.YAML.Foreign.Encode` module.
 
 Finally, if you want to convert `YValue` into a String, you can use the
-`printYAML` function from Data.YAML.Foreign.Encode.
+`printYAML` function from `Data.YAML.Foreign.Encode`.
 
 
 ```purescript
 printYAML :: forall a. (ToYAML a) => a -> String
 ```
 
+
 ## Summary
 
-Using the previous code and the type classes we defined earlier, we can go
-full circle from a YAML string to a PureScript Data Type and back to a YAML string.
+Using the previous code and the type classes we defined earlier,
+we can go full circle from a YAML string to a PureScript Data Type
+and back to a YAML string.
 
 ```purescript
 fullCircle :: String -> Either String String
 fullCircle yamlString = (readPoint yamlString) >>= pure <<< printYAML
 ```
 
+
 ## Contributing
 
-Check out the repo and make changes. You can run/add tests by running pulp test.
-
-```
-bower install
-npm install
-pulp test
-```
+1. Check out the repo
+1. Run `npm install`
+1. Make changes
+1. Test them by running `npm test`

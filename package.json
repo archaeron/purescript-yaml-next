@@ -1,15 +1,12 @@
 {
   "name": "purescript-yaml-next",
-  "license": "SEE LICENSE FILE",
-  "repository": "https://github.com/archaeron/purescript-yaml",
+  "license": "MIT",
+  "repository": "https://github.com/archaeron/purescript-yaml-next",
   "private": true,
-  "contributors": [],
-  "main": "main.js",
   "scripts": {
     "test": "spago -x test.dhall test",
     "postinstall": "spago build"
   },
-  "devDependencies": {},
   "dependencies": {
     "js-yaml": "^4.0.0"
   }
