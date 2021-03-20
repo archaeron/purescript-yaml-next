@@ -1,5 +1,7 @@
 { name =
     "yaml-next"
+, license = "MIT"
+, repository = "https://github.com/archaeron/purescript-yaml"
 , dependencies =
     [ "argonaut-codecs"
     , "argonaut-core"
