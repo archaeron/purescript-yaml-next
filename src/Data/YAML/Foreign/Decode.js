@@ -1,11 +1,10 @@
-"use strict";
+import yaml from 'js-yaml'
 
-var yaml = require('js-yaml');
-
-exports.parseYAMLImpl = function(left, right, str) {
+export function parseYAMLImpl (left, right, str) {
   try {
-    return right(yaml.load(str));
-  } catch (e) {
-    return left(e.toString());
+    return right(yaml.load(str))
   }
-};
+  catch (e) {
+    return left(e.toString())
+  }
+}

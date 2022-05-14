@@ -8,6 +8,10 @@
     "postinstall": "spago build"
   },
   "dependencies": {
-    "js-yaml": "^4.0.0"
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "purescript": "^0.15.0",
+    "spago": "^0.20.9"
   }
 }

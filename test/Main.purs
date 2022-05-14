@@ -104,7 +104,7 @@ Y: 1
 
 yamlToData :: forall a. (DecodeJson a) => String -> Either String a
 yamlToData s = case runExcept $ parseYAMLToJson s of
-  Left err -> Left "Could not parse YAML"
+  Left _ -> Left "Could not parse YAML"
   Right json -> case decodeJson json of
     Left error -> Left $ printJsonDecodeError error
     Right value -> Right value

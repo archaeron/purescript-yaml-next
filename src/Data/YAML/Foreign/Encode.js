@@ -1,18 +1,18 @@
-"use strict";
+import yaml from 'js-yaml'
 
-var yaml = require('js-yaml');
+export const jsNull = null
 
-exports.jsNull = null;
+export function objToHash (valueToYAMLImpl, fst, snd, obj) {
+  const hash = {}
 
-exports.objToHash = function(valueToYAMLImpl, fst, snd, obj) {
-  var hash = {};
-  for(var i = 0; i < obj.length; i++) {
-    hash[fst(obj[i])] = valueToYAMLImpl(snd(obj[i]));
+  for(let i = 0; i < obj.length; i++) {
+    hash[fst(obj[i])] = valueToYAMLImpl(snd(obj[i]))
   }
-  return hash;
-};
 
-exports.toYAMLImpl = function(a) {
+  return hash
+}
+
+export function toYAMLImpl (a) {
 	// noCompatMode does not support YAML 1.1
-	return yaml.dump(a, {noCompatMode : true});
+	return yaml.dump(a, {noCompatMode : true})
 }
