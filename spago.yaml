@@ -18,7 +18,7 @@ package:
       - spec: ">=8.1.1 <9.0.0"
       - spec-node: ">=0.0.3 <0.0.4"
   publish:
-    version: 3.1.0
+    version: 3.1.1
     license: MIT
     location:
       githubOwner: archaeron
