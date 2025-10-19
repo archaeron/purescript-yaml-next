@@ -7,10 +7,10 @@ package:
     - foreign
     - functions
     - ordered-collections
-    - spec
+    - spec-node
     - unsafe-coerce
   name: yaml-next
 workspace:
   extraPackages: {}
   packageSet:
-    url: https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.0-20220513/packages.json
+    registry: 66.9.2

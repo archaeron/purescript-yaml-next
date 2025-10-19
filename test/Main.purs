@@ -9,13 +9,12 @@ import Data.Map as Map
 import Data.YAML.Foreign.Decode (parseYAMLToJson)
 import Data.YAML.Foreign.Encode (printYAML)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
 import Prelude (Unit, discard, pure, ($), (<<<), (>>=))
 import Test.Instances (GeoObject(..), Mobility(..), Point(..))
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner (runSpec)
+import Test.Spec.Runner.Node (runSpecAndExitProcess)
 
 
 yamlInput :: String
@@ -139,7 +138,7 @@ fullCircle :: String -> Either String String
 fullCircle yamlString = (readPoint yamlString) >>= pure <<< printYAML
 
 main :: Effect Unit
-main = launchAff_ $ runSpec [consoleReporter] do
+main = runSpecAndExitProcess [consoleReporter] do
   describe "purescript-yaml" do
     describe "decode" do
       it "Decodes YAML" do
