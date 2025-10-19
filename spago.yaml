@@ -1,4 +1,5 @@
 package:
+  name: yaml-next
   dependencies:
     - aff
     - argonaut-codecs
@@ -9,7 +10,13 @@ package:
     - ordered-collections
     - spec-node
     - unsafe-coerce
-  name: yaml-next
+  publish:
+    version: 3.0.1
+    license: MIT
+    location:
+      githubOwner: archaeron
+      githubRepo: purescript-yaml-next
+
 workspace:
   extraPackages: {}
   packageSet:
